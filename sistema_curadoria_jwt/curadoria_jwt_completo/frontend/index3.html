@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <div id="div_login">
+
+        <form id="form_login">
+            <input type="text" name="email" id="email">
+            <input type="password" name="password" id="password">
+        </form>
+        <button type="button" onclick="api_login_usuario()"> Entrar </button>
+    </div>
+</body>
+<script>
+    async function api_login_usuario(){
+        const dados_usuario = document.getElementById('form_login');
+        const dados_objeto = Object.fromEntries (new FormData(dados_usuario));
+        const dados_json = JSON.stringify(dados_objeto);
+        // console.log(dados_json);
+        const requisicao = await fetch('http://localhost:3001/auth/login',
+            {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                    // ,"Authorization" : "Bearer <token>"
+                },
+                body: dados_json
+            }
+        );
+
+        if (!requisicao.ok){
+            throw new Error(`Erro ao enviar requisição: ${requisicao.status}`);
+        }
+
+        const resposta = await requisicao.json();
+        console.log(resposta);
+
+        // se a API devolver o token, dá pra guardar pra usar nas rotas protegidas:
+        // localStorage.setItem('token', resposta.token);
+    }
+</script>
+</html>
